@@ -1,6 +1,6 @@
 # argb-cli
 
-TypeScript CLI for discovering, inspecting, and controlling ARGB devices. The project starts with a deterministic mock/file harness so agents and contributors can build command workflows before real hardware transports are added.
+TypeScript CLI for discovering, inspecting, and controlling ARGB devices. The project includes deterministic mock/file harnesses for tests and an OpenRGB transport for controlling devices through OpenRGB's SDK server.
 
 ## Quick Start
 
@@ -24,6 +24,14 @@ argb off <device-id> [--json]
 argb run-plan <plan.json> [--json]
 argb doctor [--json]
 argb web [--host <host>] [--port <port>]
+```
+
+Global transport options:
+
+```bash
+argb --transport <mock|file|openrgb>
+argb --transport file --state <path>
+argb --transport openrgb [--openrgb-host <host>] [--openrgb-port <port>] [--openrgb-name <name>]
 ```
 
 By default the CLI uses the in-memory mock transport. Use `--transport file --state .argb-state.json` to persist simulated device state between commands:
@@ -78,19 +86,19 @@ Plans use this shape:
 }
 ```
 
-## Hardware Transport Roadmap
+## Hardware Transports
 
 Real ARGB hardware differs by vendor and bus. The transport boundary in `src/transports/types.ts` is where USB HID, serial, OpenRGB, or vendor SDK integrations should attach. Keep hardware-specific code behind that interface so command parsing, plans, and tests remain deterministic.
 
-### Planned OpenRGB CLI Usage
+### OpenRGB CLI Usage
 
-The OpenRGB transport should be exposed through the same CLI commands as the mock and file transports. Start OpenRGB first, enable its SDK server, then point the CLI at that SDK endpoint:
+The OpenRGB transport uses the same CLI commands as the mock and file transports. Start OpenRGB first, enable its SDK server, then point the CLI at that SDK endpoint:
 
 ```bash
 npm run dev -- --transport openrgb --openrgb-host 127.0.0.1 --openrgb-port 6742 doctor
 ```
 
-The default OpenRGB SDK endpoint should be `127.0.0.1:6742`, so local usage can stay short:
+The default OpenRGB SDK endpoint is `127.0.0.1:6742`, so local usage can stay short:
 
 ```bash
 npm run dev -- --transport openrgb list
@@ -105,13 +113,13 @@ npm run dev -- --transport openrgb effect openrgb:0 --name rainbow --speed 4
 npm run dev -- --transport openrgb off openrgb:0
 ```
 
-Plans should run against OpenRGB devices without changing the plan runner. The plan's `deviceId` fields must match IDs from `argb --transport openrgb list`:
+Plans run against OpenRGB devices without changing the plan runner. The plan's `deviceId` fields must match IDs from `argb --transport openrgb list`:
 
 ```bash
 npm run dev -- --transport openrgb run-plan harness/plans/boot-glow.json
 ```
 
-The web visualizer should use the same transport flags:
+The web visualizer uses the same transport flags:
 
 ```bash
 npm run dev -- --transport openrgb web
@@ -124,7 +132,7 @@ npm run dev -- --transport openrgb --openrgb-host 192.168.1.50 list
 npm run dev -- --transport openrgb --openrgb-host 192.168.1.50 set openrgb:0 --color '#ff5500'
 ```
 
-Expected transport behavior:
+OpenRGB transport behavior:
 
 - `list` discovers OpenRGB controllers and prints CLI device IDs such as `openrgb:0`.
 - `set` applies one static color across the controller LEDs.

@@ -10,8 +10,11 @@ import type { ArgbTransport, DeviceState } from "./transports/types.js";
 import { startWebServer } from "./web/server.js";
 
 interface GlobalOptions {
-  readonly transport: "mock" | "file";
+  readonly transport: "mock" | "file" | "openrgb";
   readonly state?: string;
+  readonly openrgbHost?: string;
+  readonly openrgbPort?: number;
+  readonly openrgbName?: string;
 }
 
 interface JsonOption {
@@ -24,8 +27,11 @@ program
   .name("argb")
   .description("Control ARGB devices through a harness-friendly TypeScript CLI.")
   .version("0.1.0")
-  .option("--transport <transport>", "transport to use: mock or file", "mock")
-  .option("--state <path>", "state file for --transport file");
+  .option("--transport <transport>", "transport to use: mock, file, or openrgb", "mock")
+  .option("--state <path>", "state file for --transport file")
+  .option("--openrgb-host <host>", "OpenRGB SDK host", "127.0.0.1")
+  .option("--openrgb-port <port>", "OpenRGB SDK port", parsePort, 6742)
+  .option("--openrgb-name <name>", "OpenRGB SDK client name", "argb-cli");
 
 program
   .command("list")
@@ -164,8 +170,8 @@ function withTransport<T extends readonly unknown[]>(
 
 function getGlobalOptions(): GlobalOptions {
   const options = program.opts<GlobalOptions>();
-  if (options.transport !== "mock" && options.transport !== "file") {
-    throw new Error(`Unsupported transport "${options.transport}". Expected mock or file.`);
+  if (options.transport !== "mock" && options.transport !== "file" && options.transport !== "openrgb") {
+    throw new Error(`Unsupported transport "${options.transport}". Expected mock, file, or openrgb.`);
   }
 
   return options;

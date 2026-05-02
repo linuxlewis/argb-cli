@@ -5,5 +5,6 @@ export * from "./harness/plan.js";
 export * from "./runtime.js";
 export * from "./transports/file.js";
 export * from "./transports/mock.js";
+export * from "./transports/openrgb.js";
 export * from "./transports/types.js";
 export * from "./web/server.js";
