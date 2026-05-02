@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "steps": [
+    {
+      "command": "set",
+      "deviceId": "motherboard-zone",
+      "color": "#8a1400",
+      "brightness": 35
+    },
+    {
+      "command": "effect",
+      "deviceId": "cpu-ring",
+      "effect": "fire",
+      "color": "#ff6a00",
+      "brightness": 88,
+      "speed": 3
+    },
+    {
+      "command": "off",
+      "deviceId": "gpu-strip"
+    },
+    {
+      "command": "assert",
+      "deviceId": "cpu-ring",
+      "power": true,
+      "color": "#ff6a00",
+      "brightness": 88,
+      "effect": "fire"
+    },
+    {
+      "command": "assert",
+      "deviceId": "motherboard-zone",
+      "power": true,
+      "color": "#8a1400",
+      "brightness": 35,
+      "effect": "static"
+    },
+    {
+      "command": "assert",
+      "deviceId": "gpu-strip",
+      "power": false,
+      "effect": "off"
+    }
+  ]
+}

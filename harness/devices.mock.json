@@ -18,6 +18,15 @@
     "supports": ["static", "rainbow", "off"]
   },
   {
+    "id": "cpu-ring",
+    "name": "CPU Fan RGB Ring",
+    "vendor": "Harness",
+    "product": "Mock CPU Cooler",
+    "ledCount": 24,
+    "channels": 1,
+    "supports": ["static", "breathing", "wave", "fire", "off"]
+  },
+  {
     "id": "case-fans",
     "name": "Case Fan Ring Set",
     "vendor": "Harness",

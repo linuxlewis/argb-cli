@@ -1,4 +1,4 @@
-export const ARGB_EFFECTS = ["static", "breathing", "rainbow", "wave", "off"] as const;
+export const ARGB_EFFECTS = ["static", "breathing", "rainbow", "wave", "fire", "off"] as const;
 
 export type ArgbEffect = (typeof ARGB_EFFECTS)[number];
 

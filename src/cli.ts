@@ -7,6 +7,7 @@ import { parseBrightness, parseEffect, parseSpeed } from "./core/effects.js";
 import { executePlan, loadPlan } from "./harness/plan.js";
 import { createTransport } from "./runtime.js";
 import type { ArgbTransport, DeviceState } from "./transports/types.js";
+import { startWebServer } from "./web/server.js";
 
 interface GlobalOptions {
   readonly transport: "mock" | "file";
@@ -124,6 +125,22 @@ program
     print(options.json, report, `ok=${report.ok}\ntransport=${report.transport}\ndevices=${report.devices}`);
   }));
 
+program
+  .command("web")
+  .description("Start the local ARGB visualizer web interface.")
+  .option("--host <host>", "host interface to bind", "0.0.0.0")
+  .option("--port <port>", "port to listen on", parsePort, 4173)
+  .action(async (options: { host: string; port: number }) => {
+    const transport = await createTransport(getGlobalOptions());
+    const app = await startWebServer(transport, { host: options.host, port: options.port });
+
+    console.log(`ARGB visualizer running at ${app.url}`);
+    if (options.host === "0.0.0.0" || options.host === "::") {
+      console.log(`Remote access: http://<host-ip>:${options.port}`);
+    }
+    console.log("Press Ctrl+C to stop.");
+  });
+
 try {
   await program.parseAsync();
 } catch (error) {
@@ -161,6 +178,15 @@ function print(json: boolean | undefined, value: unknown, text: string): void {
   }
 
   console.log(text);
+}
+
+function parsePort(value: string): number {
+  const port = Number.parseInt(value, 10);
+  if (!Number.isInteger(port) || port < 0 || port > 65_535) {
+    throw new Error(`Invalid port "${value}". Expected 0-65535.`);
+  }
+
+  return port;
 }
 
 function formatState(state: DeviceState): string {

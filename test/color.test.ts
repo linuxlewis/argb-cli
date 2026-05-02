@@ -17,6 +17,7 @@ describe("color parsing", () => {
 describe("effect parsing", () => {
   it("validates effect, brightness, and speed ranges", () => {
     expect(parseEffect("rainbow")).toBe("rainbow");
+    expect(parseEffect("fire")).toBe("fire");
     expect(parseBrightness("65")).toBe(65);
     expect(parseSpeed("4")).toBe(4);
     expect(() => parseBrightness("101")).toThrow(/0 to 100/);
