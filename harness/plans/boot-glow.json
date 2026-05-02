@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "steps": [
+    {
+      "command": "set",
+      "deviceId": "motherboard-zone",
+      "color": "#00aaff",
+      "brightness": 65
+    },
+    {
+      "command": "effect",
+      "deviceId": "gpu-strip",
+      "effect": "rainbow",
+      "speed": 4
+    },
+    {
+      "command": "set",
+      "deviceId": "case-fans",
+      "color": "#ff5500",
+      "brightness": 50
+    },
+    {
+      "command": "assert",
+      "deviceId": "motherboard-zone",
+      "color": "#00aaff",
+      "brightness": 65,
+      "effect": "static",
+      "power": true
+    }
+  ]
+}

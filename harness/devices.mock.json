@@ -1,0 +1,29 @@
+[
+  {
+    "id": "motherboard-zone",
+    "name": "Motherboard ARGB Header",
+    "vendor": "Harness",
+    "product": "Mock Board Controller",
+    "ledCount": 60,
+    "channels": 1,
+    "supports": ["static", "breathing", "rainbow", "wave", "off"]
+  },
+  {
+    "id": "gpu-strip",
+    "name": "GPU Light Strip",
+    "vendor": "Harness",
+    "product": "Mock GPU Controller",
+    "ledCount": 24,
+    "channels": 1,
+    "supports": ["static", "rainbow", "off"]
+  },
+  {
+    "id": "case-fans",
+    "name": "Case Fan Ring Set",
+    "vendor": "Harness",
+    "product": "Mock Fan Hub",
+    "ledCount": 36,
+    "channels": 3,
+    "supports": ["static", "breathing", "wave", "off"]
+  }
+]
