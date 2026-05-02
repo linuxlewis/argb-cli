@@ -81,3 +81,64 @@ Plans use this shape:
 ## Hardware Transport Roadmap
 
 Real ARGB hardware differs by vendor and bus. The transport boundary in `src/transports/types.ts` is where USB HID, serial, OpenRGB, or vendor SDK integrations should attach. Keep hardware-specific code behind that interface so command parsing, plans, and tests remain deterministic.
+
+### Planned OpenRGB CLI Usage
+
+The OpenRGB transport should be exposed through the same CLI commands as the mock and file transports. Start OpenRGB first, enable its SDK server, then point the CLI at that SDK endpoint:
+
+```bash
+npm run dev -- --transport openrgb --openrgb-host 127.0.0.1 --openrgb-port 6742 doctor
+```
+
+The default OpenRGB SDK endpoint should be `127.0.0.1:6742`, so local usage can stay short:
+
+```bash
+npm run dev -- --transport openrgb list
+```
+
+Use the device IDs returned by `list` with the existing commands:
+
+```bash
+npm run dev -- --transport openrgb show openrgb:0
+npm run dev -- --transport openrgb set openrgb:0 --color '#00aaff' --brightness 65
+npm run dev -- --transport openrgb effect openrgb:0 --name rainbow --speed 4
+npm run dev -- --transport openrgb off openrgb:0
+```
+
+Plans should run against OpenRGB devices without changing the plan runner. The plan's `deviceId` fields must match IDs from `argb --transport openrgb list`:
+
+```bash
+npm run dev -- --transport openrgb run-plan harness/plans/boot-glow.json
+```
+
+The web visualizer should use the same transport flags:
+
+```bash
+npm run dev -- --transport openrgb web
+```
+
+For OpenRGB running on another machine, pass the host and keep the same command surface:
+
+```bash
+npm run dev -- --transport openrgb --openrgb-host 192.168.1.50 list
+npm run dev -- --transport openrgb --openrgb-host 192.168.1.50 set openrgb:0 --color '#ff5500'
+```
+
+Expected transport behavior:
+
+- `list` discovers OpenRGB controllers and prints CLI device IDs such as `openrgb:0`.
+- `set` applies one static color across the controller LEDs.
+- `effect` maps CLI effect names to native OpenRGB modes when the device supports them.
+- `off` sends black LEDs to the target controller.
+- `doctor` reports connection failures clearly when the OpenRGB SDK server is not running or is unreachable.
+
+Effect names should stay compatible with the current CLI parser:
+
+- `static`: `static`, `direct`, `fixed`
+- `breathing`: `breathing`, `breath`
+- `rainbow`: `rainbow`, `spectrum cycle`
+- `wave`: `wave`
+- `fire`: `fire`
+- `off`: implemented by sending black LEDs
+
+If an OpenRGB device does not expose a matching native mode, the CLI should fail the command with the same unsupported-effect style used by the mock transport.
